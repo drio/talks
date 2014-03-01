@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+@import url(src/prettify/prettify.css);
+@import url(stack.css);
+
+.big {
+  font-size: 128px;
+}
+
+.caption {
+  font-size: 96px;
+  text-align: center;
+  text-shadow: 0px 2px 6px rgba(0,0,0,.5);
+}
+
+pre.prettyprint {
+  border:0px;
+}
+
+.chart {
+  font: 10px sans-serif;
+  background-color: white;
+  text-align: right;
+  padding: 3px;
+  margin: 1px;
+  color: steelblue;
+}
+
+.chart rect {
+  stroke: white;
+  fill: steelblue;
+}
+
+.chart text {
+  stroke: white;
+}
+
+.chart .rule {
+  stroke: black;
+  stroke-width: 0.2;
+}
+</style>
+
+<script src="d3.v2.js?2.7.3"></script>
+<body class="overview">
+
+<section>
+  <p style="position:absolute; top:50px; left:40px; font-size:100px; color:black">
+    <b>Exploring Genomic Data </b>
+  </p>
+  <p style="position:absolute; top:200px; right:80px; font-size:80px; color:black">
+    (with D3.js)
+  </p>
+
+  <p style="position:absolute; bottom:10px; right:30px; font-size:90px; color:grey;">
+    <a href="https://twitter.com/drio">@drio</a>
+  </p>
+</section>
+
+
+<!--
+<section>
+  <p style="position:absolute;top:200px;right:750px"> @shiondev
+  <p style="position:absolute;top:50px;right:350px;"> <img src="imgs/datafinity.png" alt="datafi">
+</section>
+-->
+
+<section>
+  <div style="position:absolute;top:50px;left:200px;font-size:80px">
+    <b>
+    <ol>
+      <li> Meet d3
+      <li> What is Genomic Data?
+      <li> DNAism
+    </ol>
+    </b>
+  </div>
+  <!-- <p style="position:absolute;bottom:0;">PEEK-A-BO! I see you!</p> -->
+</section>
+
+<section> <p class="caption"><b>Meet d3</b></p> </section>
+
+<section>
+  <div style="position:absolute;top:50px;left:200px;font-size:50px">
+    <p>
+      d3js is a Javascript library to <b>manipulate</b>
+      <b>elements</b> of a <b>document </b> based on <b>data</b>.
+    </p>
+    <br>
+    <p>
+      It is NOT a charting library.
+    </p>
+    <br>
+    <p> Created by Michael Bostock
+  </div>
+</section>
+
+<section>
+  <p>
+    <b>Elements</b>: HTML, SVG.
+  </p>
+</section>
+
+<section>
+  <p>
+    <b>SVG</b>: XML-based format specification for rendering two dimensional vector graphics.
+  </p>
+
+  <p>
+    <b>Vector graphics</b>: Use of geometrical primitives (points, lines, curves ...) to represent images.
+  </p>
+</section>
+
+<section>
+  <p> d3js vizs typically against the SVG engine
+  <p> ↦ Better performance
+  <p> ↦ Expressiveness
+</section>
+
+
+<section> <p class="caption"><b>Why d3js?</b></p> </section>
+
+<section>
+  <p> The web is a great platform to create visualizations. </p>
+</section>
+
+<section>
+  <p> Benefit from Mike's research on visualization
+  <br>
+  <p> D3 is the final result, after other great tools like protovis.
+</section>
+
+<section>
+  <p> No new ways to <b>represent</b> an image.
+  <p> Vocabulary comes directly from <b>web standards</b>.
+</section>
+
+<section>
+  That last point has huge implications:
+  <ul>
+    <li> Expressiveness
+    <li> Future compatibility
+    <li> Compatibility with existing tools (CSS, debuggers, HTML, SVG ...)
+  </ul>
+</section>
+
+<section>
+  <p> If you learn D3 you will have to learn web standards (SVG, CSS, HTML) and ...
+  <p> Javascript
+  <br>
+  <p> A <b>good learning investment</b>.
+
+  <img src="imgs/goodparts.png" style="position:absolute; bottom:100px;right:175px;" alt="good">
+</section>
+
+<section>
+  <p style="position:absolute; top:50px;"> Javascript is getting faster, thanks to google's development of Chrome's Engine, V8.
+  <img src="imgs/v8.jpg" style="position:absolute; top:200px;right:175px;" alt="v8">
+  <img src="imgs/benchmarks.png" style="position:absolute; top:200px;left:10px;" alt="benchmarks">
+</section>
+
+<section>
+  <p style="position:absolute; top:50px;">
+      The initial learning curve is steep but after that you will have great level
+      of <b>control</b> of your visualizations.
+  </p>
+  <img src="imgs/vizs.png" style="position:absolute; bottom:150px;right:175px;" alt="vizs">
+</section>
+
+<section>
+  <p> It exposes the SVG engine in a <b>pleasant</b> and <b>enjoyable</b> way.
+</section>
+<!-- END WHY D3 -->
+
+<!-- A simple VIZ -->
+
+<section>
+  <pre class="prettyprint" style="position:absolute; top:30px; right:130px; font-size:11px">
+var chart = d3.select("#body").append("svg")
+   .attr("class", "chart")
+   .attr("width", 420)
+   .attr("height", 20 * data.length)
+  .append("g")
+   .attr("transform", "translate(10,15)");
+
+var x = d3.scale.linear()
+   .domain([0, d3.max(data)])
+   .range([0, 420]);
+
+var y = d3.scale.ordinal()
+   .domain(data)
+   .rangeBands([0, 120]);
+
+chart.selectAll("line")
+     .data(x.ticks(10))
+   .enter().append("line")
+     .attr("x1", x)
+     .attr("x2", x)
+     .attr("y1", 0)
+     .attr("y2", 120)
+     .style("stroke", "#ccc");
+
+chart.selectAll("rect")
+ .data(data)
+.enter().append("rect")
+ .attr("y", y)
+ .attr("width", x)
+ .attr("height", 20);
+
+chart.selectAll("text")
+ .data(data)
+.enter().append("text")
+  .attr("x", x)
+  .attr("y", function(d) { return y(d) + y.rangeBand() / 2; })
+  .attr("dx", -3) // padding-right
+  .attr("dy", ".35em") // vertical-align: middle
+  .attr("text-anchor", "end") // text-align: right
+  .text(String);
+
+ chart.selectAll(".rule")
+     .data(x.ticks(10))
+   .enter().append("text")
+     .attr("class", "rule")
+     .attr("x", x)
+     .attr("y", 0)
+     .attr("dy", -3)
+     .attr("text-anchor", "middle")
+     .text(String);
+
+ chart.append("line")
+     .attr("y1", 0)
+     .attr("y2", 120)
+     .style("stroke", "#000");
+  </pre>
+
+<div id="result3" style="position:absolute; left:100px; top:300px">
+<script>
+var data = [4, 8, 15, 16, 23, 42];
+
+var chart = d3.select("#result3").append("svg")
+   .attr("class", "chart")
+   .attr("width", 440)
+   .attr("height", 140)
+  .append("g")
+   .attr("transform", "translate(10,15)");
+
+var x = d3.scale.linear()
+   .domain([0, d3.max(data)])
+   .range([0, 420]);
+
+var y = d3.scale.ordinal()
+   .domain(data)
+   .rangeBands([0, 120]);
+
+chart.selectAll("line")
+     .data(x.ticks(10))
+   .enter().append("line")
+     .attr("x1", x)
+     .attr("x2", x)
+     .attr("y1", 0)
+     .attr("y2", 120)
+     .style("stroke", "#ccc");
+
+chart.selectAll("rect")
+ .data(data)
+.enter().append("rect")
+ .attr("y", y)
+ .attr("width", x)
+ .attr("height", 20);
+
+chart.selectAll("text")
+ .data(data)
+.enter().append("text")
+  .attr("x", x)
+  .attr("y", function(d) { return y(d) + y.rangeBand() / 2; })
+  .attr("dx", -3) // padding-right
+  .attr("dy", ".35em") // vertical-align: middle
+  .attr("text-anchor", "end") // text-align: right
+  .text(String);
+
+chart.selectAll(".rule")
+     .data(x.ticks(10))
+   .enter().append("text")
+     .attr("class", "rule")
+     .attr("x", x)
+     .attr("y", 0)
+     .attr("dy", -3)
+     .attr("text-anchor", "middle")
+     .text(String);
+
+ chart.append("line")
+     .attr("y1", 0)
+     .attr("y2", 120)
+     .style("stroke", "#000");
+</script>
+</div>
+</section>
+
+
+<!-- BACK TO THE FUTURE
+<section style="background:#000">
+  <img src="imgs/tobe.jpeg" alt="tobe">
+</section>
+-->
+<!-- END A simple VIZ-->
+
+<section style="background:url(imgs/acgt.png);"> </section>
+
+<section style="background:url(imgs/hiseq.jpeg)"> </section>
+
+<section style="font-size:30px">
+  <h1> Other of my Genomic projects that use D3: </h1>
+  <p> Next Gen Deck <a href="https://github.com/drio/next-gen-deck">(github.com/drio/next-gen-deck)</a>
+  <p> Eg.js <a href="https://github.com/drio/eg.js">(https://github.com/drio/eg.js)</a>
+</section>
+
+<section style="font-size:30px">
+  <h2> But today I want to talk about: <bold>DNAism</bold>.</h2>
+</section>
+
+<section style="font-size:30px"> <img src="imgs/hc-a.png" style="position:absolute; top:80px; left:300px;" alt="hc"> </section>
+<section style="font-size:30px"> <img src="imgs/hc-b.png" style="position:absolute; top:80px; left:300px;" alt="hc"> </section>
+<section style="font-size:30px"> <img src="imgs/hc-c.png" style="position:absolute; top:80px; left:300px;" alt="hc"> </section>
+<section style="font-size:30px"> <img src="imgs/hc-d.png" style="position:absolute; top:80px; left:300px;" alt="hc"> </section>
+
+<section style="font-size:30px">
+  <h1> Cubism </h1>
+  <p> - js library
+  <p> - based on d3
+  <p> - Uses HC
+  <p> - On time series data
+</section>
+
+<section style="font-size:30px;">
+  <h1> Cubism </h1>
+  <p> - DSL with a nice interface
+  <p> - Easy to add sources (where your data is coming from?)
+</section>
+
+<section style="font-size:30px">
+  <h1> Time series </h1>
+  <p> numerical variables that change over time.
+</section>
+
+<section style="font-size:30px">
+  <h1> Genomic data </h1>
+  <p> numerical variables that change over genomic regions. </p>
+</section>
+
+<section style="font-size:30px">
+  <h1> Could we modify Cubism to make it work with Genomic data? </h1>
+</section>
+
+<section style="font-size:40px">
+  <h1> Yes: DNAism </h1>
+</section>
+
+
+<section style="">
+  <pre class="prettyprint" style="">
+    var context = dnaism.context()
+                   .start(500)
+                   .stop(20000)
+                   .size(1280)
+                   .chrm('Chr17')
+                   .step(2);
+  </pre>
+</section>
+
+<section style="">
+  <pre class="prettyprint" style="font-size:22px;">
+d3.select("#demo").selectAll(".axis")
+    .data(["top", "bottom"])
+  .enter().append("div")
+    .attr("class", function(d) { return d + " axis"; })
+    .each(function(d) { d3.select(this).call(context.axis().ticks(12).orient(d)); });
+
+
+d3.select("body").append("div")
+    .attr("class", "rule")
+    .call(context.rule());
+
+  </pre>
+</section>
+
+<section style="">
+  <pre class="prettyprint" style="font-size:30px;">
+    var source_bedfile = context.bedfile();
+
+    var metrics = [
+        source_bedfile.metric("sample1.bed"),
+        source_bedfile.metric("sample2.bed"),
+        source_bedfile.metric("sample3.bed"),
+        //...
+        source_bedfile.metric("sample23.bed"),
+        source_bedfile.metric("sample24.bed"),
+        source_bedfile.metric("sample25.bed"),
+    ];
+  </pre>
+</section>
+
+
+<section style="">
+  <pre class="prettyprint" style="font-size:30px;">
+$ head example/depth/sample21.bed
+Chr17   500     500     21
+Chr17   501     501     18
+Chr17   502     502     37
+Chr17   503     503     94
+Chr17   504     504     45
+Chr17   505     505     22
+Chr17   506     506     84
+Chr17   507     507     66
+Chr17   508     508     93
+Chr17   509     509     97
+...
+  </pre>
+</section>
+
+
+<section style="">
+  <pre class="prettyprint" style="font-size:30px;">
+
+d3.select("body").selectAll(".horizon")
+    .data(metrics)
+  .enter().insert("div", ".bottom")
+    .attr("class", "horizon")
+  .call(context.horizon()
+    .format(d3.format(".2")));
+  </pre>
+</section>
+
+
+
+<section style="background:url(imgs/dnaism-rd.png);"> </section>
+
+
+<section>
+  <p style="position:absolute; top:0px; left:100px; font-size:175px"> Thanks!
+  <p style="position:absolute; bottom:200px; right:200px; font-size:75px"> Questions?
+  <p style="position:absolute; bottom:80px; right:200px; font-size:30px; color:grey; ">
+    Project site and code: <a href="https://github.com/drio/dnaism">https://github.com/drio/dnaism</a>
+  </p>
+</section>
+
+
+<script src="src/prettify/prettify.js" onload="prettyPrint();">prettyPrint();</script>
+<script src="stack.v0.js"></script>

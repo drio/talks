@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+@import url(src/prettify/prettify.css);
+@import url(stack.css);
+
+.big {
+  font-size: 128px;
+}
+
+.caption {
+  font-size: 96px;
+  text-align: center;
+  text-shadow: 0px 2px 6px rgba(0,0,0,.5);
+}
+
+pre.prettyprint {
+  border:0px;
+}
+
+.chart {
+  font: 10px sans-serif;
+  background-color: white;
+  text-align: right;
+  padding: 3px;
+  margin: 1px;
+  color: steelblue;
+}
+
+.chart rect {
+  stroke: white;
+  fill: steelblue;
+}
+
+.chart text {
+  stroke: white;
+}
+
+.chart .rule {
+  stroke: black;
+  stroke-width: 0.2;
+}
+</style>
+
+<script src="d3.v2.js?2.7.3"></script>
+<body class="overview">
+
+<section>
+  <p style="position:absolute; top:50px; left:40px; font-size:100px; color:black">
+    <b>Bringing data to life with</b>
+  </p>
+
+  <img style="position:absolute; top:300px; left:20px;" src="imgs/donosti.jpg" alt="donosti">
+  <p style="position:absolute; top:300px; right:90px; font-size:100px; color:white">
+    <b>d3js</b>
+  </p>
+  <p style="position:absolute; bottom:10px; right:30px; font-size:40px; color:grey; ">
+    <a href="https://twitter.com/drio">@drio</a>
+  </p>
+</section>
+
+<!--
+<section>
+  <p style="position:absolute;top:200px;right:750px"> @shiondev
+  <p style="position:absolute;top:50px;right:350px;"> <img src="imgs/datafinity.png" alt="datafi">
+</section>
+-->
+
+<section>
+  <div style="position:absolute;top:50px;left:200px;font-size:100px">
+    <b>
+    <ol>
+      <li> Intro
+      <li> Why d3js
+      <li> Simple visualization
+      <li> Demo time!
+    </ol>
+    </b>
+  </div>
+  <!-- <p style="position:absolute;bottom:0;">PEEK-A-BO! I see you!</p> -->
+</section>
+
+<section> <p class="caption"><b>Intro</b></p> </section>
+
+<section>
+  <!-- <p style="position:absolute;top:0;">Intro</p> -->
+  <div style="position:absolute;top:50px;left:200px;font-size:50px">
+    <p>
+      d3js is a Javascript library to <b>manipulate</b>
+      <b>elements</b> of a <b>document </b> based on <b>data</b>.
+    </p>
+    <br>
+    <p>
+      It is NOT a charting library.
+    </p>
+    <br>
+    <p> Created by Michael Bostock
+  </div>
+  <!--
+  <img src="imgs/inspector.jpg" style="position:absolute; bottom:75px;right:100px;" alt="inspector">
+  -->
+</section>
+
+<section>
+  <p>
+    <b>Elements</b>: HTML, SVG.
+  </p>
+</section>
+
+<section>
+  <p>
+    <b>SVG</b>: XML-based format specification for rendering two dimensional vector graphics.
+  </p>
+
+  <p>
+    <b>Vector graphics</b>: Use of geometrical primitives (points, lines, curves ...) to represent images.
+  </p>
+</section>
+
+<section>
+  <p> d3js vizs typically against the SVG engine
+  <p> ↦ Better performance
+  <p> ↦ Expressiveness
+</section>
+
+<!-- WHY D3 -->
+<section> <p class="caption"><b>Why d3js?</b></p> </section>
+
+<section>
+  <p> Benefit from Mike's research on visualization
+  <br>
+  <p> D3 is the final result, after other great tools like protovis.
+</section>
+
+<section>
+  <p> No new ways to <b>represent</b> an image.
+  <p> Vocabulary comes directly from <b>web standards</b>.
+</section>
+
+<section>
+  That last point has huge implications:
+  <ul>
+    <li> Expressiveness
+    <li> Future compatibility
+    <li> Compatibility with existing tools (CSS, debuggers, HTML, SVG ...)
+  </ul>
+</section>
+
+<section>
+  <p> If you learn D3 you will have to learn web standards (SVG, CSS, HTML) and ...
+  <p> Javascript
+  <br>
+  <p> A <b>good learning investment</b>.
+
+  <img src="imgs/goodparts.png" style="position:absolute; bottom:100px;right:175px;" alt="good">
+</section>
+
+<section>
+  <p style="position:absolute; top:50px;"> Javascript is getting faster, thanks to google's development of Chrome's Engine, V8.
+  <img src="imgs/v8.jpg" style="position:absolute; top:200px;right:175px;" alt="v8">
+  <img src="imgs/benchmarks.png" style="position:absolute; top:200px;left:10px;" alt="benchmarks">
+</section>
+
+<section>
+  <p style="position:absolute; top:50px;">
+      The initial learning curve is steep but after that you will have great level
+      of <b>control</b> of your visualizations.
+  </p>
+  <img src="imgs/vizs.png" style="position:absolute; bottom:150px;right:175px;" alt="vizs">
+</section>
+
+<section>
+  <p> It exposes the SVG engine in a <b>pleasant</b> and <b>enjoyable</b> way.
+</section>
+<!-- END WHY D3 -->
+
+<!-- A simple VIZ -->
+<section>
+  <p class="caption"><b>A simple viz</b></p>
+  <p style="position:absolute; top:400px; right:200px; font-size:45px">
+    Based on mike's excellent bar-char
+    <a href="http://mbostock.github.com/d3/tutorial/bar-1.html">tutorial</a>
+  </p>
+</section>
+
+<section>
+    <pre class="prettyprint" style="position:absolute; top:100px;right:175px; font-size:30px">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head>
+&lt;meta charset="utf-8"&gt;
+&lt;script src="d3.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  function myViz(data) {
+    // super awesome code here
+  }
+&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;script&gt;
+    d3.json("data/some_great_data.json", myViz);
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+    </pre>
+</section>
+
+
+
+<section>
+  <p style="position:absolute; top:50px"> Our <b>dataset</b>
+  <pre class="prettyprint" style="position:absolute; top:200px;right:75px; font-size:50px">
+var data = [4, 8, 15, 16, 23, 42];
+  </pre>
+</section>
+
+<!-- A sneak peek -->
+<section>
+  <div id="final_result_preview" style="position:absolute; left:400px; top:300px">
+  <script>
+  var data = [4, 8, 15, 16, 23, 42];
+
+  var chart = d3.select("#final_result_preview").append("svg")
+     .attr("class", "chart")
+     .attr("width", 440)
+     .attr("height", 140)
+    .append("g")
+     .attr("transform", "translate(10,15)");
+
+  var x = d3.scale.linear()
+     .domain([0, d3.max(data)])
+     .range([0, 420]);
+
+  var y = d3.scale.ordinal()
+     .domain(data)
+     .rangeBands([0, 120]);
+
+  chart.selectAll("line")
+       .data(x.ticks(10))
+     .enter().append("line")
+       .attr("x1", x)
+       .attr("x2", x)
+       .attr("y1", 0)
+       .attr("y2", 120)
+       .style("stroke", "#ccc");
+
+  chart.selectAll("rect")
+   .data(data)
+  .enter().append("rect")
+   .attr("y", y)
+   .attr("width", x)
+   .attr("height", 20);
+
+  chart.selectAll("text")
+   .data(data)
+  .enter().append("text")
+    .attr("x", x)
+    .attr("y", function(d) { return y(d) + y.rangeBand() / 2; })
+    .attr("dx", -3) // padding-right
+    .attr("dy", ".35em") // vertical-align: middle
+    .attr("text-anchor", "end") // text-align: right
+    .text(String);
+
+  chart.selectAll(".rule")
+       .data(x.ticks(10))
+     .enter().append("text")
+       .attr("class", "rule")
+       .attr("x", x)
+       .attr("y", 0)
+       .attr("dy", -3)
+       .attr("text-anchor", "middle")
+       .text(String);
+
+   chart.append("line")
+       .attr("y1", 0)
+       .attr("y2", 120)
+       .style("stroke", "#000");
+  </script>
+  </div>
+</section>
+
+
+
+<section>
+  <p style="position:absolute; top:50px"> Create our SVG <b>container</b>
+  <pre class="prettyprint" style="position:absolute; top:200px;right:100px; font-size:43px">
+var chart = d3.select("body").append("svg")
+     .attr("class", "chart")
+     .attr("width", 420)
+     .attr("height", 20 * data.length);
+  </pre>
+</section>
+
+<section>
+  <p style="position:absolute; top:50px; font-size:40px"> Scale to map (map from input <b>domain</b> to an output <b>range</b>)
+  <pre class="prettyprint" style="position:absolute; top:200px;right:400px; font-size:43px">
+var x = d3.scale.linear()
+     .domain([0, d3.max(data)])
+     .range([0, 420]);
+  </pre>
+</section>
+
+<section>
+  <p style="position:absolute; top:50px"> Same for the <b>y</b> axis
+  <pre class="prettyprint" style="position:absolute; top:200px;right:500px; font-size:43px">
+var y = d3.scale.ordinal()
+     .domain(data)
+     .rangeBands([0, 120]);
+  </pre>
+</section>
+
+<section>
+  <p style="position:absolute; top:50px"> The <b>bars</b> in our barchar:
+  <pre class="prettyprint" style="position:absolute; top:200px;left:100px; font-size:43px">
+chart.selectAll("rect")
+   .data(data)
+ .enter().append("rect")
+   .attr("y", y)
+   .attr("width", x)
+   .attr("height", 20);
+  </pre>
+</section>
+
+
+<section>
+  <p style="position:absolute; top:50px"> let's <b>style</b> the elements we just created
+  <pre class="prettyprint" style="position:absolute; top:150px;left:100px; font-size:35px">
+.chart {
+  font: 10px sans-serif;
+  background-color: white;
+  text-align: right;
+  padding: 3px;
+  margin: 1px;
+  color: steelblue;
+}
+
+.chart rect {
+  stroke: white;
+  fill: steelblue;
+}
+</pre>
+</section>
+
+<section>
+  <p style="position:absolute; top:50px"> And this is what we have <b>so far</b>: </p>
+  <pre class="prettyprint" style="position:absolute; top:160px; right:100px; font-size:20px">
+var data = [4, 8, 15, 16, 23, 42];
+
+var chart = d3.select("#body").append("svg")
+   .attr("class", "chart")
+   .attr("width", 420)
+   .attr("height", 20 * data.length);
+
+var x = d3.scale.linear()
+   .domain([0, d3.max(data)])
+   .range([0, 420]);
+
+var y = d3.scale.ordinal()
+   .domain(data)
+   .rangeBands([0, 120]);
+
+chart.selectAll("rect")
+ .data(data)
+.enter().append("rect")
+ .attr("y", y)
+ .attr("width", x)
+ .attr("height", 20);
+  </pre>
+<div id="result1" style="position:absolute; left:100px; top:300px">
+<script>
+var data = [4, 8, 15, 16, 23, 42];
+
+var chart = d3.select("#result1").append("svg")
+   .attr("class", "chart")
+   .attr("width", 420)
+   .attr("height", 20 * data.length);
+
+var x = d3.scale.linear()
+   .domain([0, d3.max(data)])
+   .range([0, 420]);
+
+var y = d3.scale.ordinal()
+   .domain(data)
+   .rangeBands([0, 120]);
+
+chart.selectAll("rect")
+ .data(data)
+.enter().append("rect")
+ .attr("y", y)
+ .attr("width", x)
+ .attr("height", 20);
+</script>
+</div>
+</section>
+
+<section>
+  <p style="position:absolute; top:50px"> Let's add now some <b>text</b>
+<pre class="prettyprint" style="position:absolute; top:200px;left:80px; font-size:30px">
+chart.selectAll("text")
+ .data(data)
+.enter().append("text")
+  .attr("x", x)
+  .attr("y", function(d) { return y(d) + y.rangeBand() / 2; })
+  .attr("dx", -3) // padding-right
+  .attr("dy", ".35em") // vertical-align: middle
+  .attr("text-anchor", "end") // text-align: right
+  .text(String);
+</pre>
+</section>
+
+<section>
+  <p style="position:absolute; top:50px"> Let's style the text we just added.
+  <pre class="prettyprint" style="position:absolute; top:300px;left:100px; font-size:40px">
+.chart text {
+  stroke: white;
+}
+</pre>
+</section>
+
+<section>
+  <p style="position:absolute; top:50px"> And this is what we have <b>so far</b>: </p>
+  <pre class="prettyprint" style="position:absolute; top:145px; right:100px; font-size:15px">
+var data = [4, 8, 15, 16, 23, 42];
+
+var chart = d3.select("#body").append("svg")
+   .attr("class", "chart")
+   .attr("width", 420)
+   .attr("height", 20 * data.length);
+
+var x = d3.scale.linear()
+   .domain([0, d3.max(data)])
+   .range([0, 420]);
+
+var y = d3.scale.ordinal()
+   .domain(data)
+   .rangeBands([0, 120]);
+
+chart.selectAll("rect")
+ .data(data)
+.enter().append("rect")
+ .attr("y", y)
+ .attr("width", x)
+ .attr("height", 20);
+
+chart.selectAll("text")
+ .data(data)
+.enter().append("text")
+  .attr("x", x)
+  .attr("y", function(d) { return y(d) + y.rangeBand() / 2; })
+  .attr("dx", -3) // padding-right
+  .attr("dy", ".35em") // vertical-align: middle
+  .attr("text-anchor", "end") // text-align: right
+  .text(String);
+}
+  </pre>
+<div id="result2" style="position:absolute; left:100px; top:300px">
+<script>
+var data = [4, 8, 15, 16, 23, 42];
+
+var chart = d3.select("#result2").append("svg")
+   .attr("class", "chart")
+   .attr("width", 420)
+   .attr("height", 20 * data.length);
+
+var x = d3.scale.linear()
+   .domain([0, d3.max(data)])
+   .range([0, 420]);
+
+var y = d3.scale.ordinal()
+   .domain(data)
+   .rangeBands([0, 120]);
+
+chart.selectAll("rect")
+ .data(data)
+.enter().append("rect")
+ .attr("y", y)
+ .attr("width", x)
+ .attr("height", 20);
+
+chart.selectAll("text")
+ .data(data)
+.enter().append("text")
+  .attr("x", x)
+  .attr("y", function(d) { return y(d) + y.rangeBand() / 2; })
+  .attr("dx", -3) // padding-right
+  .attr("dy", ".35em") // vertical-align: middle
+  .attr("text-anchor", "end") // text-align: right
+  .text(String);
+
+</script>
+</div>
+</section>
+
+
+<!--  start adding marks -->
+<section>
+  <p style="position:absolute; top:30px"> Let's add some <b>marks</b> now
+<pre class="prettyprint" style="position:absolute; top:140px;left:80px; font-size:20px">
+chart.selectAll("line")
+     .data(x.ticks(10))
+   .enter().append("line")
+     .attr("x1", x)
+     .attr("x2", x)
+     .attr("y1", 0)
+     .attr("y2", 120)
+     .style("stroke", "#ccc");
+
+ chart.selectAll(".rule")
+     .data(x.ticks(10))
+   .enter().append("text")
+     .attr("class", "rule")
+     .attr("x", x)
+     .attr("y", 0)
+     .attr("dy", -3)
+     .attr("text-anchor", "middle")
+     .text(String);
+
+ chart.append("line")
+     .attr("y1", 0)
+     .attr("y2", 120)
+     .style("stroke", "#000");
+</pre>
+</section>
+
+<section>
+  <p style="position:absolute; top:50px"> The final result: </p>
+  <p style="position:absolute; bottom:100px; font-size:25px"> ... with a minor modification (svg 'g' element)
+
+  <pre class="prettyprint" style="position:absolute; top:30px; right:130px; font-size:10px">
+var chart = d3.select("#body").append("svg")
+   .attr("class", "chart")
+   .attr("width", 420)
+   .attr("height", 20 * data.length)
+  .append("g")
+   .attr("transform", "translate(10,15)");
+
+var x = d3.scale.linear()
+   .domain([0, d3.max(data)])
+   .range([0, 420]);
+
+var y = d3.scale.ordinal()
+   .domain(data)
+   .rangeBands([0, 120]);
+
+chart.selectAll("line")
+     .data(x.ticks(10))
+   .enter().append("line")
+     .attr("x1", x)
+     .attr("x2", x)
+     .attr("y1", 0)
+     .attr("y2", 120)
+     .style("stroke", "#ccc");
+
+chart.selectAll("rect")
+ .data(data)
+.enter().append("rect")
+ .attr("y", y)
+ .attr("width", x)
+ .attr("height", 20);
+
+chart.selectAll("text")
+ .data(data)
+.enter().append("text")
+  .attr("x", x)
+  .attr("y", function(d) { return y(d) + y.rangeBand() / 2; })
+  .attr("dx", -3) // padding-right
+  .attr("dy", ".35em") // vertical-align: middle
+  .attr("text-anchor", "end") // text-align: right
+  .text(String);
+
+ chart.selectAll(".rule")
+     .data(x.ticks(10))
+   .enter().append("text")
+     .attr("class", "rule")
+     .attr("x", x)
+     .attr("y", 0)
+     .attr("dy", -3)
+     .attr("text-anchor", "middle")
+     .text(String);
+
+ chart.append("line")
+     .attr("y1", 0)
+     .attr("y2", 120)
+     .style("stroke", "#000");
+  </pre>
+
+<div id="result3" style="position:absolute; left:100px; top:300px">
+<script>
+var data = [4, 8, 15, 16, 23, 42];
+
+var chart = d3.select("#result3").append("svg")
+   .attr("class", "chart")
+   .attr("width", 440)
+   .attr("height", 140)
+  .append("g")
+   .attr("transform", "translate(10,15)");
+
+var x = d3.scale.linear()
+   .domain([0, d3.max(data)])
+   .range([0, 420]);
+
+var y = d3.scale.ordinal()
+   .domain(data)
+   .rangeBands([0, 120]);
+
+chart.selectAll("line")
+     .data(x.ticks(10))
+   .enter().append("line")
+     .attr("x1", x)
+     .attr("x2", x)
+     .attr("y1", 0)
+     .attr("y2", 120)
+     .style("stroke", "#ccc");
+
+chart.selectAll("rect")
+ .data(data)
+.enter().append("rect")
+ .attr("y", y)
+ .attr("width", x)
+ .attr("height", 20);
+
+chart.selectAll("text")
+ .data(data)
+.enter().append("text")
+  .attr("x", x)
+  .attr("y", function(d) { return y(d) + y.rangeBand() / 2; })
+  .attr("dx", -3) // padding-right
+  .attr("dy", ".35em") // vertical-align: middle
+  .attr("text-anchor", "end") // text-align: right
+  .text(String);
+
+chart.selectAll(".rule")
+     .data(x.ticks(10))
+   .enter().append("text")
+     .attr("class", "rule")
+     .attr("x", x)
+     .attr("y", 0)
+     .attr("dy", -3)
+     .attr("text-anchor", "middle")
+     .text(String);
+
+ chart.append("line")
+     .attr("y1", 0)
+     .attr("y2", 120)
+     .style("stroke", "#000");
+</script>
+</div>
+</section>
+
+
+<!-- BACK TO THE FUTURE
+<section style="background:#000">
+  <img src="imgs/tobe.jpeg" alt="tobe">
+</section>
+-->
+
+<!-- END A simple VIZ-->
+
+<section>
+  <p class="caption" style="font-size:100px">
+    <b>Demos</b>
+  </p>
+</section>
+
+<section style="background:url(imgs/acgt.png);">
+  <!-- <h1 class="caption">GRATUITOUS IMAGE<br>WITH CAPTION</h1> -->
+</section>
+
+<section style="background:url(imgs/hiseq.jpeg)">
+  <!-- <h1 class="caption">GRATUITOUS IMAGE<br>WITH CAPTION</h1> -->
+</section>
+
+<section style="font-size:30px">
+  <p> Those machines(<b>sequencers</b>) generate billions of small strings of DNA (<b>reads</b>)
+  <p> Reads are <b>aligned</b> back to the <b>reference</b> genome (More data)
+</section>
+
+<section style="font-size:30px">
+  <p> The accumulation of those reads and its alignments are packed in <a href="http://samtools.sourceforge.net/SAM1.pdf">BAM</a> files.
+  <p> These <b>BAMs</b> are the input for all downstream analysis.
+</section>
+
+<section style="font-size:30px">
+  <p> We have to make sure the data is correct
+  <p> I wanted to make easy the detection of <b>anomalies</b> in these data...
+</section>
+
+<section>
+  <p style="position:absolute; top:10px; right:260px; font-size:40px">
+    <a href="https://github.com/drio/next-gen-deck">(github.com/drio/next-gen-deck)</a>
+  </p>
+  <img src="imgs/ngdeck.png" alt="ngd" style="position:absolute; left:100px; top:100px;">
+</section>
+
+<section>
+  <p> Let's see it in action ...
+</section>
+
+<section>
+  <p style="position:absolute; top:20px; right:260px; font-size:100px">
+    <b>eg.js</b>
+  </p>
+  <p style="position:absolute; top:200px; right:260px; font-size:40px">
+    <a href="https://github.com/drio/eg.js">(https://github.com/drio/eg.js)</a>
+  </p>
+</section>
+
+<section>
+  <p style="position:absolute; top:10px; right:260px; font-size:40px">
+  </p>
+  <img src="imgs/probes.png" alt="probes" style="position:absolute; left:20px; top:100px;">
+</section>
+
+<section>
+  <p> We could create a list of those <b>probes</b> and <b>screen</b> our reads for <b>hits</b>.
+  <p> <b>Genotyping</b>: Find the alleles on those locations for a
+  particular sample.
+</section>
+
+<section>
+  <p> <a href="https://github.com/drio/egrl">E-genotype</a> was born. A <b>standalone</b> tool to
+    quickly genotype next-gen sequencing data.
+  </p>
+  <p> Input: probes and reads.
+  <p> Output: hits to those probes for the set of reads.
+</section>
+
+<section>
+<pre class="prettyprint" style="position:absolute; top:100px;right:175px; font-size:30px">
+  $ head counts.csv
+  3,187080482,rs6809601,T,C,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0
+  9,83526867,rs1471723,G,C,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0
+  1,193412546,rs599140,T,C,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0
+  22,23680087,rs4140486,A,G,1,0,0,0,0,1,0,0,0,0,2,0,0,0,0
+  1,149638762,rs7172,G,A,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0
+  4,170686155,rs10010203,A,G,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0
+  3,187826181,rs13080283,G,A,2,0,0,0,0,0,0,0,0,0,2,0,0,0,0
+  4,8985664,rs9291627,T,C,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0
+  13,103914442,rs7322187,G,A,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0
+  8,4567331,rs17346747,G,A,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0
+  ...
+</pre>
+</section>
+
+<section>
+  <p style="position:absolute; top:10px; left:350px; font-size:40px"> </p>
+  <img src="imgs/heatmap.png" alt="heatmap" style="position:absolute; left:450px; top:200px;">
+</section>
+
+
+<section>
+  <img src="imgs/nanopore.jpeg" alt="nanopore" style="position:absolute; left:500px; top:150px;">
+  <p style="position:absolute; top:600px; left:100px; font-size:40px"> Realtime read streaming</p>
+</section>
+
+<section>
+  <p> Why not preforming the visualization in realtime as reads are screened?
+  <p> <a href="https://github.com/drio/eg.js">eg.js</a> was born.
+</section>
+
+<section style="font-size:35px">
+  <p> Reimplemented Egenotype's <b>engine</b> in Javascript (<a href="http://nodejs.org">node.js</a>).
+  <p> The <b>server</b> waits for web clients to come in.
+  <p> When new <b>connections</b>, hits are sent to the clients (<a href="http://socket.io">socket.io</a>).
+  <p> And a heatmap of the hits is visualized and updated in <b>realtime</b> (<a href="http://d3js.org">d3.js</a>).
+</section>
+
+<section>
+  <p> Let's see it in action ...
+</section>
+
+
+
+
+<section>
+  <p style="position:absolute; top:125px; left:100px; font-size:55px"> Thanks!
+  <p style="position:absolute; top:325px; right:300px; font-size:35px">
+    Much more: <a href="https://github.com/mbostock/d3/wiki">https://github.com/mbostock/d3/wiki</a>
+  </p>
+  <p style="position:absolute; top:450px; right:300px; font-size:45px"> Questions?
+  <!-- <p style="position:absolute; top:600px; right:120px; font-size:45px"> <b>@</b>drio -->
+  <p style="position:absolute; bottom:40px; right:50px; font-size:40px; color:grey; ">
+    <a href="https://twitter.com/drio">@drio</a>
+  </p>
+
+</section>
+
+
+
+<script src="src/prettify/prettify.js" onload="prettyPrint();">prettyPrint();</script>
+<script src="stack.v0.js"></script>
