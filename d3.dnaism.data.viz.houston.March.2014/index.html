@@ -177,6 +177,323 @@ pre.prettyprint {
 <!-- A simple VIZ -->
 
 <section>
+  <p class="caption"><b>A simple viz</b></p>
+  <p style="position:absolute; top:400px; right:200px; font-size:45px">
+    Based on mike's excellent bar-char
+    <a href="http://mbostock.github.com/d3/tutorial/bar-1.html">tutorial</a>
+  </p>
+</section>
+
+<!-- A sneak peek -->
+<section>
+  <div id="final_result_preview" style="position:absolute; left:400px; top:300px">
+  <script>
+  var data = [4, 8, 15, 16, 23, 42];
+
+  var chart = d3.select("#final_result_preview").append("svg")
+     .attr("class", "chart")
+     .attr("width", 440)
+     .attr("height", 140)
+    .append("g")
+     .attr("transform", "translate(10,15)");
+
+  var x = d3.scale.linear()
+     .domain([0, d3.max(data)])
+     .range([0, 420]);
+
+  var y = d3.scale.ordinal()
+     .domain(data)
+     .rangeBands([0, 120]);
+
+  chart.selectAll("line")
+       .data(x.ticks(10))
+     .enter().append("line")
+       .attr("x1", x)
+       .attr("x2", x)
+       .attr("y1", 0)
+       .attr("y2", 120)
+       .style("stroke", "#ccc");
+
+  chart.selectAll("rect")
+   .data(data)
+  .enter().append("rect")
+   .attr("y", y)
+   .attr("width", x)
+   .attr("height", 20);
+
+  chart.selectAll("text")
+   .data(data)
+  .enter().append("text")
+    .attr("x", x)
+    .attr("y", function(d) { return y(d) + y.rangeBand() / 2; })
+    .attr("dx", -3) // padding-right
+    .attr("dy", ".35em") // vertical-align: middle
+    .attr("text-anchor", "end") // text-align: right
+    .text(String);
+
+  chart.selectAll(".rule")
+       .data(x.ticks(10))
+     .enter().append("text")
+       .attr("class", "rule")
+       .attr("x", x)
+       .attr("y", 0)
+       .attr("dy", -3)
+       .attr("text-anchor", "middle")
+       .text(String);
+
+   chart.append("line")
+       .attr("y1", 0)
+       .attr("y2", 120)
+       .style("stroke", "#000");
+  </script>
+  </div>
+</section>
+
+
+<section>
+  <p style="position:absolute; top:50px"> Create our SVG <b>container</b>
+  <pre class="prettyprint" style="position:absolute; top:200px;right:100px; font-size:43px">
+var chart = d3.select("body").append("svg")
+     .attr("class", "chart")
+     .attr("width", 420)
+     .attr("height", 20 * data.length);
+  </pre>
+</section>
+
+<section>
+  <p style="position:absolute; top:50px; font-size:40px"> Scale to map (map from input <b>domain</b> to an output <b>range</b>)
+  <pre class="prettyprint" style="position:absolute; top:200px;right:400px; font-size:43px">
+var x = d3.scale.linear()
+     .domain([0, d3.max(data)])
+     .range([0, 420]);
+  </pre>
+</section>
+
+<section>
+  <p style="position:absolute; top:50px"> Same for the <b>y</b> axis
+  <pre class="prettyprint" style="position:absolute; top:200px;right:500px; font-size:43px">
+var y = d3.scale.ordinal()
+     .domain(data)
+     .rangeBands([0, 120]);
+  </pre>
+</section>
+
+<section>
+  <p style="position:absolute; top:50px"> The <b>bars</b> in our barchar:
+  <pre class="prettyprint" style="position:absolute; top:200px;left:100px; font-size:43px">
+chart.selectAll("rect")
+   .data(data)
+ .enter().append("rect")
+   .attr("y", y)
+   .attr("width", x)
+   .attr("height", 20);
+  </pre>
+</section>
+
+
+<section>
+  <p style="position:absolute; top:50px"> let's <b>style</b> the elements we just created
+  <pre class="prettyprint" style="position:absolute; top:150px;left:100px; font-size:35px">
+.chart {
+  font: 10px sans-serif;
+  background-color: white;
+  text-align: right;
+  padding: 3px;
+  margin: 1px;
+  color: steelblue;
+}
+
+.chart rect {
+  stroke: white;
+  fill: steelblue;
+}
+</pre>
+</section>
+
+<section>
+  <p style="position:absolute; top:50px"> And this is what we have <b>so far</b>: </p>
+  <pre class="prettyprint" style="position:absolute; top:160px; right:100px; font-size:20px">
+var data = [4, 8, 15, 16, 23, 42];
+
+var chart = d3.select("#body").append("svg")
+   .attr("class", "chart")
+   .attr("width", 420)
+   .attr("height", 20 * data.length);
+
+var x = d3.scale.linear()
+   .domain([0, d3.max(data)])
+   .range([0, 420]);
+
+var y = d3.scale.ordinal()
+   .domain(data)
+   .rangeBands([0, 120]);
+
+chart.selectAll("rect")
+ .data(data)
+.enter().append("rect")
+ .attr("y", y)
+ .attr("width", x)
+ .attr("height", 20);
+  </pre>
+<div id="result1" style="position:absolute; left:100px; top:300px">
+<script>
+var data = [4, 8, 15, 16, 23, 42];
+
+var chart = d3.select("#result1").append("svg")
+   .attr("class", "chart")
+   .attr("width", 420)
+   .attr("height", 20 * data.length);
+
+var x = d3.scale.linear()
+   .domain([0, d3.max(data)])
+   .range([0, 420]);
+
+var y = d3.scale.ordinal()
+   .domain(data)
+   .rangeBands([0, 120]);
+
+chart.selectAll("rect")
+ .data(data)
+.enter().append("rect")
+ .attr("y", y)
+ .attr("width", x)
+ .attr("height", 20);
+</script>
+</div>
+</section>
+
+<section>
+  <p style="position:absolute; top:50px"> Let's add now some <b>text</b>
+<pre class="prettyprint" style="position:absolute; top:200px;left:80px; font-size:30px">
+chart.selectAll("text")
+ .data(data)
+.enter().append("text")
+  .attr("x", x)
+  .attr("y", function(d) { return y(d) + y.rangeBand() / 2; })
+  .attr("dx", -3) // padding-right
+  .attr("dy", ".35em") // vertical-align: middle
+  .attr("text-anchor", "end") // text-align: right
+  .text(String);
+</pre>
+</section>
+
+<section>
+  <p style="position:absolute; top:50px"> Let's style the text we just added.
+  <pre class="prettyprint" style="position:absolute; top:300px;left:100px; font-size:40px">
+.chart text {
+  stroke: white;
+}
+</pre>
+</section>
+
+<section>
+  <p style="position:absolute; top:50px"> And this is what we have <b>so far</b>: </p>
+  <pre class="prettyprint" style="position:absolute; top:145px; right:100px; font-size:15px">
+var data = [4, 8, 15, 16, 23, 42];
+
+var chart = d3.select("#body").append("svg")
+   .attr("class", "chart")
+   .attr("width", 420)
+   .attr("height", 20 * data.length);
+
+var x = d3.scale.linear()
+   .domain([0, d3.max(data)])
+   .range([0, 420]);
+
+var y = d3.scale.ordinal()
+   .domain(data)
+   .rangeBands([0, 120]);
+
+chart.selectAll("rect")
+ .data(data)
+.enter().append("rect")
+ .attr("y", y)
+ .attr("width", x)
+ .attr("height", 20);
+
+chart.selectAll("text")
+ .data(data)
+.enter().append("text")
+  .attr("x", x)
+  .attr("y", function(d) { return y(d) + y.rangeBand() / 2; })
+  .attr("dx", -3) // padding-right
+  .attr("dy", ".35em") // vertical-align: middle
+  .attr("text-anchor", "end") // text-align: right
+  .text(String);
+}
+  </pre>
+<div id="result2" style="position:absolute; left:100px; top:300px">
+<script>
+var data = [4, 8, 15, 16, 23, 42];
+
+var chart = d3.select("#result2").append("svg")
+   .attr("class", "chart")
+   .attr("width", 420)
+   .attr("height", 20 * data.length);
+
+var x = d3.scale.linear()
+   .domain([0, d3.max(data)])
+   .range([0, 420]);
+
+var y = d3.scale.ordinal()
+   .domain(data)
+   .rangeBands([0, 120]);
+
+chart.selectAll("rect")
+ .data(data)
+.enter().append("rect")
+ .attr("y", y)
+ .attr("width", x)
+ .attr("height", 20);
+
+chart.selectAll("text")
+ .data(data)
+.enter().append("text")
+  .attr("x", x)
+  .attr("y", function(d) { return y(d) + y.rangeBand() / 2; })
+  .attr("dx", -3) // padding-right
+  .attr("dy", ".35em") // vertical-align: middle
+  .attr("text-anchor", "end") // text-align: right
+  .text(String);
+
+</script>
+</div>
+</section>
+
+
+
+<!--  start adding marks -->
+<section>
+  <p style="position:absolute; top:30px"> Let's add some <b>marks</b> now
+<pre class="prettyprint" style="position:absolute; top:140px;left:80px; font-size:20px">
+chart.selectAll("line")
+     .data(x.ticks(10))
+   .enter().append("line")
+     .attr("x1", x)
+     .attr("x2", x)
+     .attr("y1", 0)
+     .attr("y2", 120)
+     .style("stroke", "#ccc");
+
+ chart.selectAll(".rule")
+     .data(x.ticks(10))
+   .enter().append("text")
+     .attr("class", "rule")
+     .attr("x", x)
+     .attr("y", 0)
+     .attr("dy", -3)
+     .attr("text-anchor", "middle")
+     .text(String);
+
+ chart.append("line")
+     .attr("y1", 0)
+     .attr("y2", 120)
+     .style("stroke", "#000");
+</pre>
+</section>
+
+
+<section>
   <pre class="prettyprint" style="position:absolute; top:30px; right:130px; font-size:11px">
 var chart = d3.select("#body").append("svg")
    .attr("class", "chart")
@@ -337,6 +654,7 @@ chart.selectAll(".rule")
   <h1> Cubism </h1>
   <p> - DSL with a nice interface
   <p> - Easy to add sources (where your data is coming from?)
+  <p> <a href="https://github.com/square/cubism/blob/master/src/librato.js">Example: </a> Using Librato backend.
 </section>
 
 <section style="font-size:30px">
@@ -344,9 +662,21 @@ chart.selectAll(".rule")
   <p> numerical variables that change over time.
 </section>
 
-<section style="font-size:30px">
+<section style="font-size:30px;">
   <h1> Genomic data </h1>
   <p> numerical variables that change over genomic regions. </p>
+  <pre class="prettyprint" >
+$ head example/depth/sample21.bed
+Chr17   500     500     21
+Chr17   501     501     18
+Chr17   502     502     37
+Chr17   503     503     94
+Chr17   509     509     97
+...
+  </pre>
+</section>
+
+
 </section>
 
 <section style="font-size:30px">
@@ -401,23 +731,6 @@ d3.select("body").append("div")
   </pre>
 </section>
 
-
-<section style="">
-  <pre class="prettyprint" style="font-size:30px;">
-$ head example/depth/sample21.bed
-Chr17   500     500     21
-Chr17   501     501     18
-Chr17   502     502     37
-Chr17   503     503     94
-Chr17   504     504     45
-Chr17   505     505     22
-Chr17   506     506     84
-Chr17   507     507     66
-Chr17   508     508     93
-Chr17   509     509     97
-...
-  </pre>
-</section>
 
 
 <section style="">
